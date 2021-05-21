@@ -1,26 +1,28 @@
-name: Build & Publish Release APK
+## 1
+name: Test and deploy
 
+## Actions that will be executed when you push code currently none
 on:
   push:
-    tags:
-      - '*'
 
+## 2
 jobs:
-  Gradle:
-    runs-on: ubuntu-latest
+  ## 3
+  unit_tests:
+    runs-on: [ubuntu-latest]
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
-    - name: setup jdk
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: Make Gradle executable
-      run: chmod +x ./gradlew
-    - name: Build Release APK
-      run: ./gradlew assembleRelease
-    - name: Releasing using Hub
-      uses: kyze8439690/action-release-releaseapk@master
-      env:
-       GITHUB_TOKEN: ${{ secrets.TOKEN }}
-       APP_FOLDER: app
+      - uses: actions/checkout@v2
+
+      - name: Unit tests
+        run: ./gradlew test
+  ## 4
+  android_tests:
+    runs-on: [ macos-latest ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedAndroidTest
