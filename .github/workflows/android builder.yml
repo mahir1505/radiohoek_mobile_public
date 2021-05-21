@@ -1,0 +1,16 @@
+name: android builder
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Android Builder
+        uses: b4s36t4/Android-Action@0.0.1
