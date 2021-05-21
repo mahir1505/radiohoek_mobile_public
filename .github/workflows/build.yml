@@ -1,29 +1,22 @@
-name: react-native-android-build-apk
+name: Minimal Android CI Workflow
+
 on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
+
 jobs:
-  install-and-test:
+  test:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install npm dependencies
-        run: |
-          npm install
-  build-android:
-    needs: install-and-test
-    runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/checkout@v2
-      - name: Install npm dependencies
-        run: |
-          npm install
-      - name: Build Android Release
-        run: |
-          cd android && ./gradlew assembleRelease
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v1
         with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/
+          java-version: 1.8
+      - name: Run Tests
+        run: bash ./gradlew test --stacktrace  
